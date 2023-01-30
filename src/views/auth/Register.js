@@ -8,11 +8,11 @@ import { Link } from 'react-router-dom';
 
 const Register = () => {
   let navigate = useNavigate();
-  const [addUser, { isLoading, isSuccess }] = useAddUserMutation()
-  const usrData = useGetUserQuery();
+  const [addUser] = useAddUserMutation()
+  const usrData = useGetUserQuery([]);
 
-  const findEmail = usrData.currentData?.data.email;
-  console.log("user data -", findEmail)
+  const findEmail = usrData?.data?.data;
+  console.log("OldData -", findEmail)
 
   const [data, setData] = useState({
     name: "",
@@ -29,7 +29,6 @@ const Register = () => {
       setData({ ...data, [e.target.name]: e.target.checked });
     } else if (e.target.id === 'img') {
       setData({ ...data, [e.target.name]: e.target.files[0] });
-      console.log(e.target.files[0])
     } else {
       setData({ ...data, [e.target.name]: e.target.value });
     }
@@ -37,26 +36,29 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (data.name && data.email && data.phone && data.password) {
+    const { name, email, phone, img, password, cpassword, terms } = data;
+    if (name && email && phone && password) {
       if (data.password === data.cpassword) {
-        const res = await addUser(data);
-        console.log("Data", res)
+        if (findEmail.email === data.email) {
+          toast.error("Email already Exits!!");
+        } else {
+          const res = await addUser(data);
+          console.log("Data", res)
 
+          toast.success("Register Successfull")
+          // after submit data
+          setData({
+            name: "",
+            email: "",
+            phone: "",
+            img: "",
+            password: "",
+            cpassword: "",
+            terms: false
+          });
 
-
-        toast.success("Register Successfull")
-        // after submit data
-        setData({
-          name: "",
-          email: "",
-          phone: "",
-          img: "",
-          password: "",
-          cpassword: "",
-          terms: false
-        });
-
-        // navigate("/");
+          // navigate("/");
+        }
       } else {
         toast.error("Password not match!");
       }

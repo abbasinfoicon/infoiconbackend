@@ -5,8 +5,8 @@ class authController {
 
   static addUser = async (req, res) => {
     if (req.method == "POST") {
-      console.log("first img", req.file)
-      const mulimg = req.file.filename;
+      // console.log("first img", req.file)
+      // const mulimg = req.file.filename;
       const { name, email, img, phone, password, cpassword, terms } = req.body
 
       const user = await authModel.findOne({ email: email });
@@ -24,12 +24,13 @@ class authController {
                 name: name,
                 email: email,
                 phone: phone,
-                img: mulimg,
+                img: img,
                 password: hashPassword,
-                terms: terms ? terms : 0,
+                terms: terms
               })
 
               const result = await data.save();
+              console.log("Final Result-", result)
 
             } catch (error) {
               res.status(400).send({ "status": "failed", "message": "Unable to Register", });
@@ -46,20 +47,20 @@ class authController {
         const data = await authModel.find();
 
         if (data.length > 0) {
-            res.status(200).send({
-                status: 'success',
-                message: "All Data Show!!!",
-                data: data
-            });
+          res.status(200).send({
+            status: 'success',
+            message: "All Data Show!!!",
+            data: data
+          });
         } else {
-            res.status(404).send({
-                status: 'failed',
-                message: "Data not found...!"
-            });
+          res.status(404).send({
+            status: 'failed',
+            message: "Data not found...!"
+          });
         }
-    } catch (error) {
+      } catch (error) {
         console.log('Get All Data - ', error);
-    }
+      }
     }
   }
 }
