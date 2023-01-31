@@ -3,16 +3,12 @@ import { useNavigate } from 'react-router';
 import bsCustomFileInput from 'bs-custom-file-input';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useAddUserMutation, useGetUserQuery } from '../../features/auth/authApi';
+import { useAddUserMutation } from '../../features/auth/authApi';
 import { Link } from 'react-router-dom';
 
 const Register = () => {
   let navigate = useNavigate();
   const [addUser] = useAddUserMutation()
-  const usrData = useGetUserQuery([]);
-
-  const findEmail = usrData?.data?.data;
-  console.log("OldData -", findEmail)
 
   const [data, setData] = useState({
     name: "",
@@ -29,36 +25,42 @@ const Register = () => {
       setData({ ...data, [e.target.name]: e.target.checked });
     } else if (e.target.id === 'img') {
       setData({ ...data, [e.target.name]: e.target.files[0] });
+      console.log(e.target.files)
     } else {
       setData({ ...data, [e.target.name]: e.target.value });
     }
   }
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { name, email, phone, img, password, cpassword, terms } = data;
     if (name && email && phone && password) {
-      if (data.password === data.cpassword) {
-        if (findEmail.email === data.email) {
-          toast.error("Email already Exits!!");
+      if (password === cpassword) {
+
+
+        const res = await addUser(data);
+        console.log("Data", res)
+
+        if (res.data.status === 'success') {
+          toast.success(res.data.message)
         } else {
-          const res = await addUser(data);
-          console.log("Data", res)
-
-          toast.success("Register Successfull")
-          // after submit data
-          setData({
-            name: "",
-            email: "",
-            phone: "",
-            img: "",
-            password: "",
-            cpassword: "",
-            terms: false
-          });
-
-          // navigate("/");
+          toast.error(res.data.message)
         }
+
+        // after submit data
+        setData({
+          name: "",
+          email: "",
+          phone: "",
+          img: e.target.reset(),
+          password: "",
+          cpassword: "",
+          terms: false
+        });
+
+        // navigate("/");
       } else {
         toast.error("Password not match!");
       }

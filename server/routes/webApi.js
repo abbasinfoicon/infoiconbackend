@@ -7,6 +7,8 @@ const router = express.Router();
 // =======================================================================//
 //=================== auth-router ========================================//
 //========================================================================//
-router.all("/register", upload.single("img"), authController.addUser);
+router.use("/register",  upload.single('img'));
+router.post("/register", authController.addUser);
+router.get("/register", authController.addUser);
 
 export default router;

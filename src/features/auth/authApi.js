@@ -11,8 +11,9 @@ export const authApi = createApi({
                 url: "register",
                 method: "POST",
                 body: user,
+                file:user.img,
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json'
                 }
             }),
         }),
