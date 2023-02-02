@@ -3,10 +3,8 @@ import mongoose from "mongoose";
 // SCHMA
 const pageSchema = new mongoose.Schema(
   {
-    page: { type: String, required: true },
-    banner: { type: String },
+    title: { type: String, required: true },
     img: { type: String, required: true },
-    show: { type: String, required: true },
     smallDesc: { type: String, required: true },
     desc: { type: String, required: true },
     categories: { type: String },
@@ -19,6 +17,6 @@ const pageSchema = new mongoose.Schema(
 );
 
 // MODEL
-const pageModel = mongoose.model("page", pageSchema);
+const pageModel = mongoose.model("cms", pageSchema);
 
 export default pageModel;

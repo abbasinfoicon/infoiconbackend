@@ -8,12 +8,11 @@ class pageController {
     try {
       const data = await pageModel.find();
 
-      res.render("pages/page/page", {
-        data: data,
-        moment: moment,
-        page_name: "page",
-        sub_page: "allPage"
+      res.send({
+        data: data.length > 0 ? data : "NO DATA",
+        moment: moment
       });
+
     } catch (error) {
       console.log("Get All Data - ", error);
     }
@@ -21,38 +20,35 @@ class pageController {
 
   // CREATE DATA
   static addData = async (req, res) => {
-    if (req.method == "POST") {
-      try {
-        const mulimg = req.files["img"][0].filename;
-        const bnrimg = req.files["banner"][0].filename;
+    try {
+      const mulimg = req.files["img"][0].filename;
 
-        // console.log("file-img", req.files);
-        const { page, show, smallDesc, desc, categories, status, subCategories } = req.body
-        console.log("page data-", req.body)
-        if (page && show && mulimg && desc) {
-          const data = await pageModel({
-            page: page,
-            banner: bnrimg,
-            show: show,
-            smallDesc: smallDesc,
-            desc: desc,
-            categories: categories,
-            subCategories: subCategories,
-            img: mulimg,
-            status: status
-          });
-          const result = data.save();
-          res.redirect("page");
+      // console.log("file-img", req.files);
+      const { title, smallDesc, desc, categories, subCategories, status } = req.body
+      console.log("page data-", req.body)
+      if (page && show && mulimg && desc) {
+        const data = new pageModel({
+          title: title,
+          img: mulimg,
+          smallDesc: smallDesc,
+          desc: desc,
+          categories: categories,
+          subCategories: subCategories,
+          status: status
+        });
+        const result = await data.save();
+        res.send({
+          status: "Success",
+          message: "Data Successfully!!!",
+          result: result
+        })
 
-          // console.log(result);
-        } else {
-          res.render("pages/page/add-page", { page_name: "page", sub_page: "addPage", status: "failed", message: "All Fieled Required!!!" });
-        }
-      } catch (error) {
-        console.log("Create Data - ", error);
+        // console.log(result);
+      } else {
+        res.send({ status: "Failed", message: "All Fieled Required!!!" });
       }
-    } else {
-      res.render("pages/page/add-page", { page_name: "page", sub_page: "addPage" });
+    } catch (error) {
+      res.send({ status: "Failed", message: "Create data Failed!!", error: error });
     }
   };
 

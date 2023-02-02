@@ -25,10 +25,11 @@ const Register = () => {
       setData({ ...data, [e.target.name]: e.target.checked });
     } else if (e.target.id === 'img') {
       setData({ ...data, [e.target.name]: e.target.files[0] });
-      console.log(e.target.files)
     } else {
       setData({ ...data, [e.target.name]: e.target.value });
     }
+
+    console.log(data)
   }
 
 
