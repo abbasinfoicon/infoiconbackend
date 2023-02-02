@@ -1,12 +1,13 @@
 import bsCustomFileInput from 'bs-custom-file-input'
 import { CKEditor } from 'ckeditor4-react'
 import React, { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 const Award = () => {
   useEffect(() => {
     bsCustomFileInput.init()
   }, [])
-  
+
   return (
     <div className="card">
       <div className="card-header">
@@ -21,28 +22,30 @@ const Award = () => {
           </button>
         </div>
       </div>
+
       <div className="add-new p-2 bg-light">
         <button data-toggle="modal" data-target="#addNew">Add New</button>
       </div>
+
       <div className="card-body p-0">
         <table className="table table-striped projects">
           <thead>
             <tr>
               <th style={{ width: '1%' }}>#</th>
-              <th style={{ width: '100px' }}>Image</th>
-              <th style={{ width: '25%' }}>Title</th>
-              <th style={{ width: '30%' }}>Content</th>
-              <th>Status</th>
+              <th style={{ width: '200px' }}>Image</th>
+              <th style={{ width: '10%' }}>Title</th>
+              <th style={{ width: '40%' }}>Content</th>
+              <th>Link</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>#1</td>
-              <td><img src="https://www.infoicontechnologies.com/uploads/1637928011506-5d8da684cb46aded530962309228859a.jpg" alt="india" className="img-fluid Flag" />  </td>
-              <td>SwiftUI – An Interactive and Revolutionary UI Framework Equipped with Futuristic Features!</td>
-              <td>Call or e-mail our sales department to place an order or for pricing, product information, pre-sales advice and sales information.</td>
-              <th className='text-warning'>Pending</th>
+              <td><img src="https://www.infoicontechnologies.com/img/nasscom-logo.png" alt="Nasscom" className="img-fluid Flag" />  </td>
+              <td>Nasscom</td>
+              <td>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quaerat ipsam, eos repellat eaque vero vitae. Impedit quos vero qui, reiciendis repellendus, maxime aliquam atque natus cumque perspiciatis aut laboriosam minus?</td>
+              <td><Link to="https://www.infoicontechnologies.com/pdf/Member-Certificate-NSCM.pdf" className='btn btn-primary'>Nasscom</Link></td>
               <td className="project-actions text-right">
                 <a className="btn btn-primary btn-sm" href="#"><i className="fas fa-eye"></i></a>
                 <a className="btn btn-info btn-sm mx-2" href="#"><i className="fas fa-pencil-alt"></i></a>
@@ -76,7 +79,7 @@ const Award = () => {
                   </div>
 
                   <div className="row">
-                    <div className="col-md-8">
+                    <div className="col-md-6">
                       <div className="form-group">
                         <label>Upload Image</label>
                         <div className="input-group">
@@ -88,14 +91,13 @@ const Award = () => {
                       </div>
                     </div>
 
-                    <div className="col-md-4">
-                      <div className="form-group">
-                        <label>Status</label>
-                        <select className="form-control">
-                          <option>Success</option>
-                          <option>Panding</option>
-                          <option>Reject</option>
-                        </select>
+                    <div className="col-md-6">
+                      <label>PDF Link</label>
+                      <div className="input-group">
+                        <div className="input-group-prepend">
+                          <span className="input-group-text"><i class="fas fa-link"></i></span>
+                        </div>
+                        <input type="text" className="form-control" placeholder="Enter Link..." />
                       </div>
                     </div>
                   </div>
@@ -111,21 +113,18 @@ const Award = () => {
             <div className="view-data p-3">
               <div className="row">
                 <div className="col-md-7">
-                  <h3 className="text-primary">SwiftUI – An Interactive and Revolutionary UI Framework Equipped with Futuristic Features!</h3>
-                  <p className="text-muted">Call or e-mail our sales department to place an order or for pricing, product information, pre-sales advice and sales information.</p>
-                </div>
+                  <h3 className="text-primary">Nasscom</h3>
+                  <p className="text-muted">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit sunt corrupti expedita officia libero quidem doloribus et eveniet aspernatur, iste iusto delectus, facilis laudantium numquam recusandae optio ipsam? Pariatur, voluptatibus.</p>
 
-                <div className="col-md-5">
-                  <img src='https://www.infoicontechnologies.com/uploads/1637928011506-5d8da684cb46aded530962309228859a.jpg' alt="India" className='img-style img-fluid' />
-                  
                   <div className="text-muted">
                     <p className="text-sm">Create by
                       <b className="d-block"><i className="fas fa-user"></i> Admin | <i className="fas fa-clock"></i> 02-Feb-2023</b>
                     </p>
-                    <p className="text-sm">Categories
-                      <b className="d-block"><i class="fas fa-folder-open"></i> App Developement</b>
-                    </p>
                   </div>
+                </div>
+
+                <div className="col-md-5">
+                  <img src='https://www.infoicontechnologies.com/img/nasscom-logo.png' alt="Nasscom" className='img-style img-fluid' />
                 </div>
               </div>
 

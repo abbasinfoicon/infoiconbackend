@@ -1,12 +1,11 @@
 import bsCustomFileInput from 'bs-custom-file-input'
-import { CKEditor } from 'ckeditor4-react'
 import React, { useEffect } from 'react'
 
 const Social = () => {
   useEffect(() => {
     bsCustomFileInput.init()
   }, [])
-  
+
   return (
     <div className="card">
       <div className="card-header">
@@ -21,17 +20,19 @@ const Social = () => {
           </button>
         </div>
       </div>
+
       <div className="add-new p-2 bg-light">
         <button data-toggle="modal" data-target="#addNew">Add New</button>
       </div>
+
       <div className="card-body p-0">
         <table className="table table-striped projects">
           <thead>
             <tr>
               <th style={{ width: '1%' }}>#</th>
-              <th style={{ width: '100px' }}>Image</th>
-              <th style={{ width: '25%' }}>Title</th>
-              <th style={{ width: '30%' }}>Content</th>
+              <th style={{ width: '50px' }}>Icon</th>
+              <th style={{ width: '100px' }}>Name</th>
+              <th style={{ width: '60%' }}>Link</th>
               <th>Status</th>
               <th></th>
             </tr>
@@ -39,9 +40,11 @@ const Social = () => {
           <tbody>
             <tr>
               <td>#1</td>
-              <td><img src="https://www.infoicontechnologies.com/uploads/1637928011506-5d8da684cb46aded530962309228859a.jpg" alt="india" className="img-fluid Flag" />  </td>
-              <td>SwiftUI – An Interactive and Revolutionary UI Framework Equipped with Futuristic Features!</td>
-              <td>Call or e-mail our sales department to place an order or for pricing, product information, pre-sales advice and sales information.</td>
+              <td><i className="fab fa-facebook-f"></i></td>
+              <td>facebook</td>
+              <td><a className="btn btn-primary" href="https://www.facebook.com/InfoiconTech/" target="_blank">
+                <i className="fab fa-facebook-f"></i> /InfoiconTech</a>
+              </td>
               <th className='text-warning'>Pending</th>
               <td className="project-actions text-right">
                 <a className="btn btn-primary btn-sm" href="#"><i className="fas fa-eye"></i></a>
@@ -65,30 +68,31 @@ const Social = () => {
             <form>
               <div className="modal-body">
                 <div className="card-body">
-                  <div className="form-group">
-                    <label>Title</label>
-                    <input type="text" className="form-control" placeholder="Title..." />
-                  </div>
-
-                  <div className="form-group">
-                    <label>Content</label>
-                    <CKEditor initData="<p>Full Description</p>" />
-                  </div>
-
                   <div className="row">
-                    <div className="col-md-8">
+                    <div className="col-md-3">
                       <div className="form-group">
-                        <label>Upload Image</label>
-                        <div className="input-group">
-                          <div className="custom-file">
-                            <input type="file" name="img" className="custom-file-input" id="file" />
-                            <label className="custom-file-label" htmlFor="file">Choose Image</label>
-                          </div>
-                        </div>
+                        <label>Socail Name</label>
+                        <select className="form-control">
+                          <option value="facebook">Facebook</option>
+                          <option value="twitter">Twitter</option>
+                          <option value="instagram">Instagram</option>
+                          <option value="linkedin-in">Linkedin</option>
+                          <option value="rss">RSS</option>
+                        </select>
                       </div>
                     </div>
 
-                    <div className="col-md-4">
+                    <div className="col-md-6">
+                      <label>Socail Link</label>
+                      <div className="input-group">
+                        <div className="input-group-prepend">
+                          <span className="input-group-text"><i className="fas fa-link"></i></span>
+                        </div>
+                        <input type="link" className="form-control" placeholder="Enter Link..." />
+                      </div>
+                    </div>
+
+                    <div className="col-md-3">
                       <div className="form-group">
                         <label>Status</label>
                         <select className="form-control">
@@ -117,13 +121,13 @@ const Social = () => {
 
                 <div className="col-md-5">
                   <img src='https://www.infoicontechnologies.com/uploads/1637928011506-5d8da684cb46aded530962309228859a.jpg' alt="India" className='img-style img-fluid' />
-                  
+
                   <div className="text-muted">
                     <p className="text-sm">Create by
                       <b className="d-block"><i className="fas fa-user"></i> Admin | <i className="fas fa-clock"></i> 02-Feb-2023</b>
                     </p>
                     <p className="text-sm">Categories
-                      <b className="d-block"><i class="fas fa-folder-open"></i> App Developement</b>
+                      <b className="d-block"><i className="fas fa-folder-open"></i> App Developement</b>
                     </p>
                   </div>
                 </div>
