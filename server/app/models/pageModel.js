@@ -9,6 +9,7 @@ const pageSchema = new mongoose.Schema(
     desc: { type: String, required: true },
     categories: { type: String },
     subCategories: { type: String },
+    show: { type: String, required: true },
     status: { type: String }
   },
   {

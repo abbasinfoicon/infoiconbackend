@@ -21,19 +21,21 @@ class pageController {
   // CREATE DATA
   static addData = async (req, res) => {
     try {
-      const mulimg = req.files["img"][0].filename;
+      console.log("Body", req.body);
+      // console.log("Img", req.files);
 
-      // console.log("file-img", req.files);
-      const { title, smallDesc, desc, categories, subCategories, status } = req.body
+      // const mulimg = req.files["img"][0].filename;
+      const { title, img, smallDesc, desc, categories, subCategories, show, status } = req.body
       console.log("page data-", req.body)
-      if (page && show && mulimg && desc) {
+      if (title && smallDesc && categories && show && desc) {
         const data = new pageModel({
           title: title,
-          img: mulimg,
+          img: img,
           smallDesc: smallDesc,
           desc: desc,
           categories: categories,
           subCategories: subCategories,
+          show: show,
           status: status
         });
         const result = await data.save();

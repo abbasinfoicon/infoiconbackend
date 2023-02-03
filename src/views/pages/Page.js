@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CDBCard, CDBCardBody, CDBDataTable } from 'cdbreact';
+import DataTable from 'react-data-table-component';
 import bsCustomFileInput from 'bs-custom-file-input';
 import { CKEditor } from 'ckeditor4-react';
 import { useAddPageMutation, useGetPageQuery } from '../../features/services/pages/cmsPage';
@@ -7,15 +7,22 @@ import { toast } from 'react-toastify';
 
 const Page = () => {
   const cmsPage = useGetPageQuery();
-  const [cms, setCms] = useState([]);
+  const [main, setMain] = useState()
+  // console.log(cmsPage?.data?.data)
+
+  const [search, setSearch] = useState("");
+  const [fltr, setFltr] = useState([]);
+
 
   const [addPage] = useAddPageMutation();
-
-  const [desc, setDesc] = useState('test')
+  const [desc, setDesc] = useState('')
   const [field, setfield] = useState({
     title: '',
     img: '',
     smallDesc: '',
+    categories: '',
+    subCategories: '',
+    show: '',
     status: '',
   });
 
@@ -25,87 +32,91 @@ const Page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { title, smallDesc, status, img } = field;
+    const { title, smallDesc, categories, subCategories, show, status, img } = field;
 
-    if (title && desc && img && smallDesc && status) {
+    if (title && show && smallDesc && desc && categories) {
       const res = await addPage({ ...field, desc: desc });
+
+      // console.log("Add Data: ", res);
+      toast.success("Create Data Successfully!!!");
       setfield({
         title: '',
         img: '',
         smallDesc: '',
+        categories: '',
+        subCategories: '',
+        show: '',
         status: '',
       });
-      setDesc('')
+
+      document.getElementById('customForm').reset();
+      setDesc('test')
     } else {
       toast.error("All Feild required!!!");
     }
   };
 
-  const data = () => {
-    return {
-      columns: [
-        {
-          label: '#',
-          field: 'id',
-          width: 20,
-        },
-        {
-          label: 'Title',
-          field: 'title',
-          width: 100,
-        },
-        {
-          label: 'Image',
-          field: 'img',
-          width: 100,
-        },
-        {
-          label: 'Small Desc',
-          field: 'smalldesc',
-          sort: 'asc',
-          width: 150,
-        },
-        {
-          label: 'Description',
-          field: 'desc',
-          sort: 'disabled',
-          width: 200,
-        },
-        {
-          label: 'Status',
-          field: 'status',
-          sort: 'disabled',
-          width: 100,
-        },
-        {
-          label: '',
-          field: 'action',
-          sort: 'disabled',
-          width: 100,
-        }
-      ],
-      rows: [
-        {
-          id: '1',
-          title: 'Mobile Apps Development',
-          img: <img src='https://www.infoicontechnologies.com/img/mobile-appication.gif' alt="" className='img-style' style={{ width: '100px' }} />,
-          smalldesc: 'Mobile Application Development is basically the progression by which application software is developed for low power handheld devices; this includes personal digital assistants, enterprise digital assistants or mobile phones.',
-          desc: 'Mobile app development helps the individual business or a group to build up new contacts and later on use them for different marketing campaigns. We at Infoicon technologies provide the easy method to your customers to reach you on one touch application. We proffer number of services for the same that include.',
-          status: 'Success',
-          action: <div className='action align-middle text-nowrap'>
-            <a className="btn btn-primary btn-sm" data-toggle="modal" data-target="#addNew"><i className="fas fa-folder"></i> View</a>
-            <a className="btn btn-info btn-sm mx-2" data-toggle="modal" data-target="#addNew"><i className="fas fa-pencil-alt"></i> Edit</a>
-            <a className="btn btn-danger btn-sm" data-toggle="modal" data-target="#addNew"><i className="fas fa-trash"></i> Delete</a>
-          </div>,
-        },
-      ],
-    };
-  };
+  const columns = [
+    {
+      name: '#',
+      selector: (row, index) => index + 1
+    },
+    {
+      name: 'Title',
+      selector: row => row.title,
+      sortable: true,
+    },
+    {
+      name: 'Image',
+      selector: row => <img src={row.img} className="img-style" width={100} />
+    },
+    {
+      name: 'Small Desc',
+      selector: row => row.smallDesc.slice(0, 50) + '...',
+    },
+    {
+      name: 'Categories',
+      selector: row => row.categories,
+    },
+    {
+      name: 'Sub Categories',
+      selector: row => row.subCategories,
+    },
+    {
+      name: 'Status',
+      selector: row => row.status,
+      sortable: true,
+    },
+    {
+      name: 'Action',
+      cell: row => <>
+        <button className='btn btn-primary btn-sm' onClick={() => alert(row.title)}><i className="fas fa-eye"></i></button>
+        <button className='btn btn-info btn-sm mx-2' onClick={() => alert(row.title)}><i className="fas fa-pencil-alt"></i></button>
+        <button className='btn btn-danger btn-sm' onClick={() => alert(row.title)}><i className="fas fa-trash"></i></button>
+      </>
+    }
+  ];
 
   useEffect(() => {
     bsCustomFileInput.init()
-    setCms(cmsPage)
+  }, [])
+
+  useEffect(() => {
+    setMain(cmsPage?.data?.data)
+    setFltr(cmsPage?.data?.data)
   }, [cmsPage])
+
+  console.log("main", main)
+
+
+  useEffect(() => {
+    var result = main?.filter(list => {
+      return list.title.toLowerCase().match(search.toLocaleLowerCase());
+    });
+    setFltr(result);
+  }, [search])
+
+  const ExpandedComponent = ({ data }) => <div className='p-5' dangerouslySetInnerHTML={{ __html: JSON.stringify(data.desc) }}></div>;
 
   return (
     <div className="container-fluid">
@@ -128,7 +139,7 @@ const Page = () => {
               </div>
 
               {
-                cms.data && cms.data.length ? (
+                cmsPage.data && cmsPage.data.length ? (
                   <>
                     <div className="view-data p-3">
                       <h3 className="text-primary"><i className="fas fa-paint-brush"></i> Mobile Apps Development</h3>
@@ -174,7 +185,7 @@ const Page = () => {
                       </div>
                     </div>
                   </>
-                ) : <form encType="multipart/form-data" onSubmit={handleSubmit}>
+                ) : <form encType="multipart/form-data" onSubmit={handleSubmit} id="customForm">
                   <div className="modal-body">
                     <div className="card-body">
                       <div className="form-group">
@@ -193,18 +204,41 @@ const Page = () => {
                       </div>
 
                       <div className="row">
-                        <div className="col-sm-2">
+                        <div className="col-sm-6">
                           <div className="form-group">
-                            <label>Status</label>
-                            <select className="form-control" name="status" defaultValue={field.status} onChange={handleChange}>
+                            <label>Categories</label>
+
+                            <select className="form-control" name="categories" defaultValue={field.categories} onChange={handleChange}>
                               <option value="" disabled>Select</option>
-                              <option value="success">Success</option>
-                              <option value="panding">Panding</option>
-                              <option value="reject">Reject</option>
+                              {
+                                ["About us", "Services", "Expertise", "Infra Services", "Industries", "Custom Solution", "Products", "Big Data Analytics Solution", "Software Testing", "Digital Marketing", "Cloud Computing", "AWS-Migration"].map((item, i) => {
+                                  return (
+                                    <option value={item} key={i}>{item}</option>
+                                  )
+                                })
+                              }
                             </select>
                           </div>
                         </div>
 
+                        <div className="col-sm-6">
+                          <div className="form-group">
+                            <label>Sub Categories</label>
+                            <select className="form-control" name="subCategories" defaultValue={field.subCategories} onChange={handleChange}>
+                              <option value="" disabled>Select</option>
+                              {
+                                ["Corporate Info", "Quick Contact Info", "Certifications", "Mobility Solution", "Tech Expertise", "Solution Design", "Success Stories", "CMS Development", "PHP Expertise", "Sforce Development", "JS Libraries & Frameworks", "Backend Support", "Cloud Services", "Sforce Development", "Sharepoint Developement"].map((item, i) => {
+                                  return (
+                                    <option value={item} key={i}>{item}</option>
+                                  )
+                                })
+                              }
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="row">
                         <div className="col-sm-5">
                           <div className="form-group">
                             <label>Upload Image</label>
@@ -214,6 +248,38 @@ const Page = () => {
                                 <label className="custom-file-label" htmlFor="file">Choose image</label>
                               </div>
                             </div>
+                          </div>
+                        </div>
+
+                        <div className="col-sm-3">
+                          <div className="form-group">
+                            <label>Show Direction</label>
+                            <select className="form-control" name="show" defaultValue={field.show} onChange={handleChange}>
+                              <option value="" disabled>Select</option>
+                              {
+                                ["Front Manu", "Toggle Menu"].map((item, i) => {
+                                  return (
+                                    <option value={item} key={i}>{item}</option>
+                                  )
+                                })
+                              }
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="col-sm-2">
+                          <div className="form-group">
+                            <label>Status</label>
+                            <select className="form-control" name="status" defaultValue={field.status} onChange={handleChange}>
+                              <option value="" disabled>Select</option>
+                              {
+                                ["success", "panding", "reject"].map((item, i) => {
+                                  return (
+                                    <option value={item} key={i}>{item}</option>
+                                  )
+                                })
+                              }
+                            </select>
                           </div>
                         </div>
                       </div>
@@ -232,39 +298,34 @@ const Page = () => {
         </div>
         {/* modal-popup-end */}
 
-        {cms.isError ? (
+        {cmsPage.isError ? (
           <p className='iserror'>Oh no, there was an error</p>
-        ) : cms.isLoading ? (
+        ) : cmsPage.isLoading ? (
           <p className='isloading'>Loading...</p>
-        ) : cms.data && cms.data.length ? (
-          <>
-            {
-              cms.map((item, index) => {
-                return (
-                  <>
-                    <div className="col-12">
-                      <CDBCard className="p-2 border">
-                        <CDBCardBody>
-                          <CDBDataTable
-                            striped
-                            bordered
-                            hover
-                            checkbox
-                            maxHeight="55vh"
-                            entriesOptions={[5, 10, 15, 20, 25]}
-                            entries={5}
-                            pagesAmount={4}
-                            data={data()}
-                            materialSearch={true}
-                          />
-                        </CDBCardBody>
-                      </CDBCard>
-                    </div>
-                  </>
-                )
-              })
-            }
-          </>
+        ) : cmsPage.data?.data.length ? (
+          <div className="col-md-12">
+            <div className="card">
+              <div className="card-body1">
+                <DataTable
+                  title="Page Lists"
+                  columns={columns}
+                  data={fltr}
+                  pagination
+                  fixedHeader
+                  fixedHeaderScrollHeight='525px'
+                  selectableRows
+                  selectableRowsHighlight
+                  highlightOnHover
+                  subHeader
+                  subHeaderComponent={<input type='text' placeholder="Search here..." className='form-control w-25' value={search} onChange={(e) => setSearch(e.target.value)} />}
+                  subHeaderAlign="right"
+                  striped
+                  expandableRows
+                  expandableRowsComponent={ExpandedComponent}
+                />
+              </div>
+            </div>
+          </div>
         ) : <>
           <div className="col-md-12">
             <div className="card">
