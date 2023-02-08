@@ -50,7 +50,7 @@ const Page = () => {
       });
 
       document.getElementById('customForm').reset();
-      setDesc('test')
+      setDesc(CKEditor.getData(''))
     } else {
       toast.error("All Feild required!!!");
     }
@@ -92,10 +92,15 @@ const Page = () => {
       cell: row => <>
         <button className='btn btn-primary btn-sm' onClick={() => alert(row.title)}><i className="fas fa-eye"></i></button>
         <button className='btn btn-info btn-sm mx-2' onClick={() => alert(row.title)}><i className="fas fa-pencil-alt"></i></button>
-        <button className='btn btn-danger btn-sm' onClick={() => alert(row.title)}><i className="fas fa-trash"></i></button>
+        <button className='btn btn-danger btn-sm' onClick={() => deleteData(row._id)}><i className="fas fa-trash"></i></button>
       </>
     }
   ];
+
+  const deleteData = (id) => { 
+    console.log("delete-id-", id);
+    
+  }
 
   useEffect(() => {
     bsCustomFileInput.init()
@@ -103,11 +108,8 @@ const Page = () => {
 
   useEffect(() => {
     setMain(cmsPage?.data?.data)
-    setFltr(cmsPage?.data?.data)
-  }, [cmsPage])
-
-  console.log("main", main)
-
+    setFltr(main)
+  }, [main, cmsPage])
 
   useEffect(() => {
     var result = main?.filter(list => {
@@ -117,7 +119,8 @@ const Page = () => {
   }, [search])
 
   const ExpandedComponent = ({ data }) => <div className='p-5' dangerouslySetInnerHTML={{ __html: JSON.stringify(data.desc) }}></div>;
-
+  console.log("Filter data-", fltr);
+  console.log("Main-", main);
   return (
     <div className="container-fluid">
       <div className="row">
@@ -186,101 +189,99 @@ const Page = () => {
                     </div>
                   </>
                 ) : <form encType="multipart/form-data" onSubmit={handleSubmit} id="customForm">
-                  <div className="modal-body">
-                    <div className="card-body">
-                      <div className="form-group">
-                        <label>Title</label>
-                        <input type="text" name="title" value={field.title} onChange={handleChange} className="form-control" placeholder="Enter title" />
-                      </div>
+                  <div className="card-body">
+                    <div className="form-group">
+                      <label>Title</label>
+                      <input type="text" name="title" value={field.title} onChange={handleChange} className="form-control" placeholder="Enter title" />
+                    </div>
 
-                      <div className="form-group">
-                        <label>Small Description</label>
-                        <textarea name="smallDesc" value={field.smallDesc} onChange={handleChange} cols="30" rows="2" className="form-control" placeholder='Please Enter small description for website...'></textarea>
-                      </div>
+                    <div className="form-group">
+                      <label>Small Description</label>
+                      <textarea name="smallDesc" value={field.smallDesc} onChange={handleChange} cols="30" rows="2" className="form-control" placeholder='Please Enter small description for website...'></textarea>
+                    </div>
 
-                      <div className="form-group">
-                        <label>Description</label>
-                        <CKEditor name="desc" id="desc" onChange={({ editor }) => setDesc(editor.getData())} />
-                      </div>
+                    <div className="form-group">
+                      <label>Description</label>
+                      <CKEditor name="desc" id="desc" onChange={({ editor }) => setDesc(editor.getData())} />
+                    </div>
 
-                      <div className="row">
-                        <div className="col-sm-6">
-                          <div className="form-group">
-                            <label>Categories</label>
+                    <div className="row">
+                      <div className="col-sm-6">
+                        <div className="form-group">
+                          <label>Categories</label>
 
-                            <select className="form-control" name="categories" defaultValue={field.categories} onChange={handleChange}>
-                              <option value="" disabled>Select</option>
-                              {
-                                ["About us", "Services", "Expertise", "Infra Services", "Industries", "Custom Solution", "Products", "Big Data Analytics Solution", "Software Testing", "Digital Marketing", "Cloud Computing", "AWS-Migration"].map((item, i) => {
-                                  return (
-                                    <option value={item} key={i}>{item}</option>
-                                  )
-                                })
-                              }
-                            </select>
-                          </div>
-                        </div>
-
-                        <div className="col-sm-6">
-                          <div className="form-group">
-                            <label>Sub Categories</label>
-                            <select className="form-control" name="subCategories" defaultValue={field.subCategories} onChange={handleChange}>
-                              <option value="" disabled>Select</option>
-                              {
-                                ["Corporate Info", "Quick Contact Info", "Certifications", "Mobility Solution", "Tech Expertise", "Solution Design", "Success Stories", "CMS Development", "PHP Expertise", "Sforce Development", "JS Libraries & Frameworks", "Backend Support", "Cloud Services", "Sforce Development", "Sharepoint Developement"].map((item, i) => {
-                                  return (
-                                    <option value={item} key={i}>{item}</option>
-                                  )
-                                })
-                              }
-                            </select>
-                          </div>
+                          <select className="form-control" name="categories" defaultValue={field.categories} onChange={handleChange}>
+                            <option value="" disabled>Select</option>
+                            {
+                              ["About us", "Services", "Expertise", "Infra Services", "Industries", "Custom Solution", "Products", "Big Data Analytics Solution", "Software Testing", "Digital Marketing", "Cloud Computing", "AWS-Migration"].map((item, i) => {
+                                return (
+                                  <option value={item} key={i}>{item}</option>
+                                )
+                              })
+                            }
+                          </select>
                         </div>
                       </div>
 
-                      <div className="row">
-                        <div className="col-sm-5">
-                          <div className="form-group">
-                            <label>Upload Image</label>
-                            <div className="input-group">
-                              <div className="custom-file">
-                                <input type="file" name="img" onChange={handleChange} className="custom-file-input" id="file" />
-                                <label className="custom-file-label" htmlFor="file">Choose image</label>
-                              </div>
+                      <div className="col-sm-6">
+                        <div className="form-group">
+                          <label>Sub Categories</label>
+                          <select className="form-control" name="subCategories" defaultValue={field.subCategories} onChange={handleChange}>
+                            <option value="" disabled>Select</option>
+                            {
+                              ["Corporate Info", "Quick Contact Info", "Certifications", "Mobility Solution", "Tech Expertise", "Solution Design", "Success Stories", "CMS Development", "PHP Expertise", "Sforce Development", "JS Libraries & Frameworks", "Backend Support", "Cloud Services", "Sforce Development", "Sharepoint Developement"].map((item, i) => {
+                                return (
+                                  <option value={item} key={i}>{item}</option>
+                                )
+                              })
+                            }
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <div className="col-sm-5">
+                        <div className="form-group">
+                          <label>Upload Image</label>
+                          <div className="input-group">
+                            <div className="custom-file">
+                              <input type="file" name="img" onChange={handleChange} className="custom-file-input" id="file" />
+                              <label className="custom-file-label" htmlFor="file">Choose image</label>
                             </div>
                           </div>
                         </div>
+                      </div>
 
-                        <div className="col-sm-3">
-                          <div className="form-group">
-                            <label>Show Direction</label>
-                            <select className="form-control" name="show" defaultValue={field.show} onChange={handleChange}>
-                              <option value="" disabled>Select</option>
-                              {
-                                ["Front Manu", "Toggle Menu"].map((item, i) => {
-                                  return (
-                                    <option value={item} key={i}>{item}</option>
-                                  )
-                                })
-                              }
-                            </select>
-                          </div>
+                      <div className="col-sm-3">
+                        <div className="form-group">
+                          <label>Show Direction</label>
+                          <select className="form-control" name="show" defaultValue={field.show} onChange={handleChange}>
+                            <option value="" disabled>Select</option>
+                            {
+                              ["Front Manu", "Toggle Menu"].map((item, i) => {
+                                return (
+                                  <option value={item} key={i}>{item}</option>
+                                )
+                              })
+                            }
+                          </select>
                         </div>
+                      </div>
 
-                        <div className="col-sm-2">
-                          <div className="form-group">
-                            <label>Status</label>
-                            <select className="form-control" name="status" defaultValue={field.status} onChange={handleChange}>
-                              <option value="" disabled>Select</option>
-                              {
-                                ["success", "panding", "reject"].map((item, i) => {
-                                  return (
-                                    <option value={item} key={i}>{item}</option>
-                                  )
-                                })
-                              }
-                            </select>
-                          </div>
+                      <div className="col-sm-2">
+                        <div className="form-group">
+                          <label>Status</label>
+                          <select className="form-control" name="status" defaultValue={field.status} onChange={handleChange}>
+                            <option value="" disabled>Select</option>
+                            {
+                              ["success", "panding", "reject"].map((item, i) => {
+                                return (
+                                  <option value={item} key={i}>{item}</option>
+                                )
+                              })
+                            }
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -292,6 +293,33 @@ const Page = () => {
                   </div>
                 </form>
               }
+
+            </div>
+          </div>
+        </div>
+        {/* modal-popup-end */}
+
+        {/* modal-popup-start */}
+        <div className="modal fade" id="delNew" aria-hidden="true">
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h4 className="modal-title">Delelte Data</h4>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+
+              <div className="delete-modal">
+                <i className="fas fa-times"></i>
+                <h3>Are you sure?</h3>
+                <p>Do you really want to delete these records? This process cannot be undone.</p>
+
+                <div className="action">
+                  <button className="btn btn-default border" data-dismiss="modal">Cancel</button>
+                  <button className="btn btn-danger">Delete</button>
+                </div>
+              </div>
 
             </div>
           </div>
