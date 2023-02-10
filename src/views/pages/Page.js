@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
+import modal from 'react-modal';
 import bsCustomFileInput from 'bs-custom-file-input';
 import { CKEditor } from 'ckeditor4-react';
 import { useAddPageMutation, useGetPageQuery } from '../../features/services/pages/cmsPage';
@@ -26,6 +27,7 @@ const Page = () => {
     status: '',
   });
 
+  const [deleteRow, setDeleteRow] = useState(null)
   const handleChange = (e) => {
     setfield({ ...field, [e.target.name]: e.target.value });
   }
@@ -92,15 +94,10 @@ const Page = () => {
       cell: row => <>
         <button className='btn btn-primary btn-sm' onClick={() => alert(row.title)}><i className="fas fa-eye"></i></button>
         <button className='btn btn-info btn-sm mx-2' onClick={() => alert(row.title)}><i className="fas fa-pencil-alt"></i></button>
-        <button className='btn btn-danger btn-sm' onClick={() => deleteData(row._id)}><i className="fas fa-trash"></i></button>
+        <button className='btn btn-danger btn-sm' onClick={() => setDeleteRow(row._id)}><i className="fas fa-trash"></i></button>
       </>
     }
   ];
-
-  const deleteData = (id) => { 
-    console.log("delete-id-", id);
-    
-  }
 
   useEffect(() => {
     bsCustomFileInput.init()
@@ -300,12 +297,12 @@ const Page = () => {
         {/* modal-popup-end */}
 
         {/* modal-popup-start */}
-        <div className="modal fade" id="delNew" aria-hidden="true">
+        {deleteRow && <div className="modal" style={{display:'block'}} id="delNew" aria-hidden="true">
           <div className="modal-dialog modal-lg">
             <div className="modal-content">
               <div className="modal-header">
                 <h4 className="modal-title">Delelte Data</h4>
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" onClick={() => setDeleteRow(null)} className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">×</span>
                 </button>
               </div>
@@ -317,13 +314,13 @@ const Page = () => {
 
                 <div className="action">
                   <button className="btn btn-default border" data-dismiss="modal">Cancel</button>
-                  <button className="btn btn-danger">Delete</button>
+                  <button className="btn btn-danger">Delete {deleteRow}</button>
                 </div>
               </div>
 
             </div>
           </div>
-        </div>
+        </div>}
         {/* modal-popup-end */}
 
         {cmsPage.isError ? (
